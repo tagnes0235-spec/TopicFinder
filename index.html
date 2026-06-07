@@ -3,151 +3,183 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>구글 트렌드 × 학문 분류 탐구 주제 탐색기</title>
+<title>탐구 주제 검색기</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f2ed;--sur:#fff;--sur2:#f9f8f5;--brd:#e2ddd4;--tx:#181816;--tx2:#6a6760;--tx3:#a09d97;--r:12px;--rs:8px}
+:root{
+  --r:16px;--rs:12px;
+  --tx:#1a1a2e;--tx2:#4a4a6a;--tx3:#7a7a9a;
+  --glass-bg:rgba(255,255,255,0.55);
+  --glass-bg-soft:rgba(255,255,255,0.35);
+  --glass-bg-strong:rgba(255,255,255,0.75);
+  --glass-brd:rgba(255,255,255,0.55);
+  --glass-brd-soft:rgba(255,255,255,0.35);
+  --glass-shadow:0 8px 32px 0 rgba(31,38,135,0.12);
+  --accent-1:#5b6fde;  /* 인디고 - 자유 검색 */
+  --accent-2:#7e5fce;  /* 라벤더 - 통계자료 */
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px}
-.hdr{background:var(--sur);border-bottom:1px solid var(--brd);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-.hdr-l .t{font-size:16px;font-weight:700;letter-spacing:-.3px}
-.hdr-l .s{font-size:11px;color:var(--tx3);margin-top:1px}
+body{font-family:'Noto Sans KR',sans-serif;background:linear-gradient(135deg,#a8c5e8 0%,#c0b4e8 40%,#d8b4e0 70%,#e8c4d8 100%);background-attachment:fixed;color:var(--tx);min-height:100vh;font-size:14px}
+
+/* 헤더 - 글래스 */
+.hdr{background:rgba(255,255,255,0.5);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--glass-brd);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 4px 16px rgba(31,38,135,0.08)}
+.hdr-l .t{font-size:16px;font-weight:700;letter-spacing:-.3px;color:var(--tx)}
+.hdr-l .s{font-size:11px;color:var(--tx2);margin-top:1px}
 .hdr-badges{display:flex;gap:6px}
-.badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:500}
-.b-free{background:#e8f5ef;color:#1a7f5a}
-.b-off{background:#faeeda;color:#633806}
+.badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:500;background:rgba(255,255,255,0.6);backdrop-filter:blur(8px)}
+.b-free{color:#0d6e4a}
+.b-off{color:#7a4408}
+
 .wrap{max-width:920px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:14px}
-.card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:18px 20px}
-.lbl{font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+
+/* 카드 공통 */
+.card{background:var(--glass-bg);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--glass-shadow)}
+.lbl{font-size:10px;font-weight:700;color:var(--tx2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* 카드 영역 컬러 칩 */
+.card-chip{display:inline-flex;align-items:center;font-size:9px;padding:3px 10px;border-radius:10px;color:#fff;font-weight:500;letter-spacing:.06em;text-transform:none;line-height:1;flex-shrink:0}
+.chip-search{background:#7e5fce}
+.chip-filter{background:#9b6fde}
+.chip-stats{background:#b48fde}
+
+/* 큰 카드 제목 (자유 검색/구글 트렌드/탐구 보고서 공통 톤) */
+.card-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-sub{font-size:11px;color:var(--tx2);margin-bottom:4px;line-height:1.4}
 
 /* 기간 선택 + 안내 가로 배치 */
 .period-flex{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
-.period-info{flex:1;min-width:240px;font-size:11.5px;color:var(--tx2);line-height:1.45;padding:10px 14px;background:var(--sur2);border-radius:var(--rs);border:1px dashed var(--brd);display:flex;flex-direction:column;justify-content:center;gap:3px}
+.period-info{flex:1;min-width:240px;font-size:11.5px;color:var(--tx2);line-height:1.45;padding:10px 14px;background:var(--glass-bg-soft);border-radius:var(--rs);border:1px solid var(--glass-brd-soft);display:flex;flex-direction:column;justify-content:center;gap:3px}
 .period-info .pi-sub{font-size:10.5px;color:var(--tx3);line-height:1.4}
 @media(max-width:600px){.period-info{flex:1 1 100%;min-width:0}}
 
 /* 기간 선택 */
 .period-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.pbtn{padding:10px 14px;border-radius:var(--rs);border:2px solid var(--brd);background:transparent;color:var(--tx2);cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.pbtn{padding:10px 14px;border-radius:var(--rs);border:1px solid var(--glass-brd);background:var(--glass-bg-soft);color:var(--tx2);cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;transition:all .15s;display:inline-flex;align-items:center;gap:5px;backdrop-filter:blur(8px)}
 .pbtn .ps{font-size:10px;font-weight:400;opacity:.6}
-.pbtn.on{color:#fff;border-color:transparent}
-.pbtn:hover:not(.on){background:var(--sur2)}
+.pbtn.on{color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(31,38,135,0.18)}
+.pbtn:hover:not(.on){background:var(--glass-bg-strong);transform:translateY(-1px)}
 
 /* 카테고리 필터 */
-.cf-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:12px}
-.cfb{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--brd);background:transparent;color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s}
-.cfb.on{background:var(--tx);color:var(--sur);border-color:transparent}
-.cfb:hover:not(.on){background:var(--sur2)}
+.cf-group{margin-top:8px}
+.cf-group:first-child{margin-top:0}
+.cf-group-lbl{font-size:10px;font-weight:700;color:var(--tx2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.cf-group-chip{font-size:8px;padding:2px 7px;border-radius:8px;color:#fff;font-weight:500;letter-spacing:.04em;text-transform:none;line-height:1}
+.chip-trend{background:#b48fde}
+.chip-field{background:#7e5fce}
+.cf-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:0}
+.cfb{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--glass-brd);background:var(--glass-bg-soft);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s;backdrop-filter:blur(6px)}
+.cfb.on{background:var(--tx);color:#fff;border-color:transparent}
+.cfb:hover:not(.on){background:var(--glass-bg-strong)}
 
 /* 결과 통계 */
 .stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:7px;margin-bottom:4px}
-.stat{background:var(--sur2);border-radius:var(--rs);padding:9px 10px;text-align:center;border:1px solid var(--brd)}
-.stat-n{font-size:22px;font-weight:700}
-.stat-l{font-size:10px;color:var(--tx3);margin-top:1px}
+.stat{background:var(--glass-bg-soft);border-radius:var(--rs);padding:9px 10px;text-align:center;border:1px solid var(--glass-brd-soft)}
+.stat-n{font-size:22px;font-weight:700;color:var(--tx)}
+.stat-l{font-size:10px;color:var(--tx2);margin-top:1px}
 
 /* 탭 */
 .rtabs{display:flex;gap:6px;margin-bottom:12px}
-.rtab{font-size:12px;font-weight:500;padding:6px 16px;border-radius:20px;border:1px solid var(--brd);background:transparent;color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s}
-.rtab.on{background:var(--tx);color:var(--sur);border-color:transparent}
+.rtab{font-size:12px;font-weight:500;padding:6px 16px;border-radius:20px;border:1px solid var(--glass-brd);background:var(--glass-bg-soft);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s;backdrop-filter:blur(6px)}
+.rtab.on{background:var(--tx);color:#fff;border-color:transparent}
 .rpnl{display:none}.rpnl.on{display:block}
 
 /* 대분류 섹션 */
 .maj-sec{margin-bottom:10px}
-.maj-hdr{display:flex;align-items:center;gap:9px;padding:.65rem 1rem;border-radius:var(--rs);cursor:pointer;user-select:none;border:1px solid var(--brd);background:var(--sur)}
-.maj-hdr:hover{background:var(--sur2)}
-.maj-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.maj-hdr{display:flex;align-items:center;gap:9px;padding:.65rem 1rem;border-radius:var(--rs);cursor:pointer;user-select:none;border:1px solid var(--glass-brd);background:var(--glass-bg-soft);transition:background .15s;backdrop-filter:blur(8px)}
+.maj-hdr:hover{background:var(--glass-bg-strong)}
+.maj-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px rgba(0,0,0,0.15)}
 .maj-name{font-size:13px;font-weight:700;color:var(--tx)}
 .maj-cnt{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;flex-shrink:0}
-.maj-chev{font-size:11px;color:var(--tx3);margin-left:auto;transition:transform .15s}
+.maj-chev{font-size:11px;color:var(--tx2);margin-left:auto;transition:transform .15s}
 .maj-chev.open{transform:rotate(180deg)}
 .maj-body{display:none;padding:8px 0 4px 0}
 .maj-body.open{display:block}
 
 /* 소분류 */
 .min-grp{margin-bottom:12px}
-.min-lbl{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;padding-left:2px;display:flex;align-items:center;gap:6px}
-.min-lbl::after{content:"";flex:1;height:1px;background:var(--brd)}
+.min-lbl{font-size:10px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;padding-left:2px;display:flex;align-items:center;gap:6px}
+.min-lbl::after{content:"";flex:1;height:1px;background:var(--glass-brd-soft)}
 
 /* 키워드 카드 그리드 */
 .kw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
-.kw-card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--rs);padding:12px 14px;border-left-width:4px;transition:box-shadow .12s}
-.kw-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.kw-card{background:var(--glass-bg);backdrop-filter:blur(10px);border:1px solid var(--glass-brd);border-radius:var(--rs);padding:12px 14px;border-left-width:4px;transition:all .15s}
+.kw-card:hover{background:var(--glass-bg-strong);box-shadow:0 6px 16px rgba(31,38,135,0.12);transform:translateY(-2px)}
 .kw-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:5px}
 .kw-word{font-size:12px;font-weight:700;color:var(--tx);line-height:1.3;flex:1}
-.yr-badge{font-size:9px;padding:2px 6px;border-radius:10px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.yr-badge{font-size:9px;padding:2px 6px;border-radius:10px;font-weight:500;white-space:nowrap;flex-shrink:0;background:rgba(255,255,255,0.7)}
 .kw-topic{font-size:11px;color:var(--tx2);line-height:1.5;margin-bottom:8px}
 .kw-method{font-size:10px;color:var(--tx3);margin-bottom:8px;display:flex;align-items:center;gap:4px}
 .kw-links{display:flex;gap:5px;flex-wrap:wrap}
-.riss-a{font-size:10px;padding:3px 10px;border-radius:20px;text-decoration:none;font-weight:500;white-space:nowrap;transition:opacity .1s;display:inline-block}
-.riss-a:hover{opacity:.8}
-.riss-main{background:#1a7f5a;color:#fff}
-.riss-sub{background:var(--sur2);color:var(--tx2);border:1px solid var(--brd)}
-
-/* RISS 검색어 편집 영역 */
-/* RISS 검색어 편집 영역 (제거됨 — 하단 개별 링크로 대체) */
+.riss-a{font-size:10px;padding:3px 10px;border-radius:20px;text-decoration:none;font-weight:500;white-space:nowrap;transition:all .12s;display:inline-block}
+.riss-a:hover{opacity:.85;transform:translateY(-1px)}
+.riss-main{background:#4ba87f;color:#fff}
+.riss-sub{background:var(--glass-bg);color:var(--tx2);border:1px solid var(--glass-brd)}
 
 /* 분류표 */
-.tbl-wrap{overflow-x:auto;border-radius:var(--rs);border:1px solid var(--brd)}
+.tbl-wrap{overflow-x:auto;border-radius:var(--rs);border:1px solid var(--glass-brd);background:var(--glass-bg-soft);backdrop-filter:blur(10px)}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:var(--sur2);color:var(--tx2);font-weight:500;text-align:left;padding:8px 12px;border-bottom:1px solid var(--brd);font-size:11px;white-space:nowrap}
-td{padding:8px 12px;border-bottom:1px solid var(--brd);vertical-align:top;color:var(--tx);line-height:1.5;font-size:12px}
+th{background:rgba(255,255,255,0.45);color:var(--tx2);font-weight:500;text-align:left;padding:8px 12px;border-bottom:1px solid var(--glass-brd-soft);font-size:11px;white-space:nowrap}
+td{padding:8px 12px;border-bottom:1px solid var(--glass-brd-soft);vertical-align:top;color:var(--tx);line-height:1.5;font-size:12px}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--sur2)}
+tr:hover td{background:rgba(255,255,255,0.3)}
 .pill{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap}
 
 /* 액션 버튼 */
 .brow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.abtn{font-size:12px;padding:8px 16px;border:1px solid var(--brd);border-radius:var(--rs);background:var(--sur);color:var(--tx2);cursor:pointer;font-family:inherit;transition:background .12s}
-.abtn:hover{background:var(--sur2)}
-.abtn.pri{background:#2952d9;color:#fff;border-color:#2952d9}
-.abtn.pri:hover{opacity:.88}
+.abtn{font-size:12px;padding:8px 16px;border:1px solid var(--glass-brd);border-radius:var(--rs);background:var(--glass-bg-soft);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s;backdrop-filter:blur(8px)}
+.abtn:hover{background:var(--glass-bg-strong);transform:translateY(-1px)}
+.abtn.pri{background:var(--accent-1);color:#fff;border-color:transparent}
+.abtn.pri:hover{background:var(--accent-1);opacity:.9;box-shadow:0 4px 12px rgba(91,111,222,0.3)}
 
 /* 안내 */
-.info{background:#e8f5ef;border:1px solid #a8d8bf;border-radius:var(--rs);padding:10px 14px;font-size:12px;color:#0d4a2c;line-height:1.7;display:flex;gap:8px;align-items:flex-start}
+.info{background:rgba(255,255,255,0.5);border:1px solid var(--glass-brd);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:#0d4a2c;line-height:1.7;display:flex;gap:8px;align-items:flex-start;backdrop-filter:blur(8px)}
 .empty{text-align:center;padding:3rem 1rem;font-size:13px;color:var(--tx2);line-height:1.8}
 .empty .big{font-size:36px;margin-bottom:8px}
 
 /* 자유 검색 카드 */
-.free-card{background:linear-gradient(135deg,#fff 0%,#f9f8f5 100%);border:1px solid var(--brd);border-radius:var(--r);padding:18px 20px;border-left:4px solid #2952d9}
-.free-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.free-card{background:var(--glass-bg);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--glass-shadow)}
+.free-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .free-sub{font-size:11px;color:var(--tx2);margin-bottom:12px;line-height:1.5}
 .free-search-row{display:flex;gap:6px;align-items:center;margin-bottom:10px}
-.free-input{flex:1;font-size:13px;padding:10px 14px;border:2px solid var(--brd);border-radius:var(--rs);background:#fff;color:var(--tx);font-family:inherit;outline:none;min-width:0;transition:border-color .12s}
-.free-input:focus{border-color:#2952d9}
+.free-input{flex:1;font-size:13px;padding:10px 14px;border:1px solid var(--glass-brd);border-radius:var(--rs);background:rgba(255,255,255,0.5);color:var(--tx);font-family:inherit;outline:none;min-width:0;transition:all .12s;backdrop-filter:blur(6px)}
+.free-input:focus{border-color:var(--accent-1);background:rgba(255,255,255,0.85)}
+.free-input::placeholder{color:var(--tx3)}
 .free-btn-row{display:flex;gap:6px;flex-wrap:wrap}
-.free-btn{font-size:12px;padding:9px 14px;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;font-weight:500;white-space:nowrap;transition:opacity .1s;display:inline-flex;align-items:center;gap:5px}
-.free-btn:hover{opacity:.85}
+.free-btn{font-size:12px;padding:9px 14px;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;font-weight:500;white-space:nowrap;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.free-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(31,38,135,0.18)}
 .free-btn:disabled{opacity:.4;cursor:not-allowed}
-.fb-all{background:#2952d9;color:#fff}
-.fb-sgsg{background:#d94e2c;color:#fff}
-.fb-riss{background:#1a7f5a;color:#fff}
-.fb-sci{background:#1a4ba8;color:#fff}
-.fb-scholar{background:#6a6760;color:#fff}
-.free-suggest{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--brd)}
-.free-sg-lbl{font-size:10px;color:var(--tx3);margin-right:4px;align-self:center}
-.free-sg{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--brd);background:transparent;color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s}
-.free-sg:hover{background:var(--sur2);border-color:#2952d9;color:#2952d9}
+.fb-all{background:var(--accent-1);color:#fff}
+.fb-sgsg{background:#b48fde;color:#fff}
+.fb-riss{background:#8a7fd4;color:#fff}
+.fb-sci{background:#5b8fde;color:#fff}
+.free-suggest{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--glass-brd-soft)}
+.free-sg-lbl{font-size:10px;color:var(--tx2);margin-right:4px;align-self:center}
+.free-sg{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--glass-brd);background:var(--glass-bg-soft);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s;backdrop-filter:blur(6px)}
+.free-sg:hover{background:var(--glass-bg-strong);border-color:var(--accent-1);color:var(--accent-1)}
 @media(max-width:600px){.free-search-row{flex-direction:column;align-items:stretch}.free-btn-row{justify-content:center}}
 
-/* 탐구 보고서 작성 카드 (통계자료 검색) */
-.report-card{background:linear-gradient(135deg,#fff 0%,#f3f7f7 100%);border:1px solid var(--brd);border-radius:var(--r);padding:18px 20px;border-left:4px solid #0d8a8a}
-.report-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+/* 탐구 보고서 카드 */
+.report-card{background:var(--glass-bg);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--glass-shadow)}
+.report-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .report-sub{font-size:11px;color:var(--tx2);margin-bottom:12px;line-height:1.5}
 .report-search-row{display:flex;gap:6px;align-items:center;margin-bottom:10px}
-.report-input{flex:1;font-size:13px;padding:10px 14px;border:2px solid var(--brd);border-radius:var(--rs);background:#fff;color:var(--tx);font-family:inherit;outline:none;min-width:0;transition:border-color .12s}
-.report-input:focus{border-color:#0d8a8a}
+.report-input{flex:1;font-size:13px;padding:10px 14px;border:1px solid var(--glass-brd);border-radius:var(--rs);background:rgba(255,255,255,0.5);color:var(--tx);font-family:inherit;outline:none;min-width:0;transition:all .12s;backdrop-filter:blur(6px)}
+.report-input:focus{border-color:var(--accent-2);background:rgba(255,255,255,0.85)}
+.report-input::placeholder{color:var(--tx3)}
 .report-btn-row{display:flex;gap:6px;flex-wrap:wrap}
-.report-btn{font-size:12px;padding:9px 14px;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;font-weight:500;white-space:nowrap;transition:opacity .1s;display:inline-flex;align-items:center;gap:5px}
-.report-btn:hover{opacity:.85}
-.rb-all{background:#0d8a8a;color:#fff}
-.rb-kosis{background:#1a4ba8;color:#fff}
-.rb-index{background:#7f3fbf;color:#fff}
-.rb-bok{background:#b84318;color:#fff}
-.rb-kostat{background:#555;color:#fff}
-.report-suggest{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--brd)}
-.report-sg-lbl{font-size:10px;color:var(--tx3);margin-right:4px;align-self:center}
-.report-sg{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--brd);background:transparent;color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s}
-.report-sg:hover{background:var(--sur2);border-color:#0d8a8a;color:#0d8a8a}
+.report-btn{font-size:12px;padding:9px 14px;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;font-weight:500;white-space:nowrap;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.report-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(31,38,135,0.18)}
+.rb-all{background:var(--accent-2);color:#fff}
+.rb-kosis{background:#4d6fc0;color:#fff}
+.rb-index{background:#6373c8;color:#fff}
+.rb-kostat{background:#7287d4;color:#fff}
+.rb-bok{background:#8a7fd4;color:#fff}
+.rb-sdata{background:#9b6fde;color:#fff}
+.rb-sstat{background:#a585c8;color:#fff}
+.report-suggest{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--glass-brd-soft)}
+.report-sg-lbl{font-size:10px;color:var(--tx2);margin-right:4px;align-self:center}
+.report-sg{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--glass-brd);background:var(--glass-bg-soft);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s;backdrop-filter:blur(6px)}
+.report-sg:hover{background:var(--glass-bg-strong);border-color:var(--accent-2);color:var(--accent-2)}
 @media(max-width:600px){.report-search-row{flex-direction:column;align-items:stretch}.report-btn-row{justify-content:center}}
 
 @media(max-width:600px){.period-row{justify-content:center}.kw-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(3,1fr)}}
@@ -157,7 +189,7 @@ tr:hover td{background:var(--sur2)}
 
 <div class="hdr">
   <div class="hdr-l">
-    <div class="t">구글 트렌드 × 학문 분류 탐구 주제 탐색기</div>
+    <div class="t">탐구 주제 검색기</div>
     <div class="s">기간별 인기 검색어 → 학문 대분류 자동 정리 → 배경지식(생글생글)부터 심화 연구(RISS)까지 연결</div>
   </div>
   <div class="hdr-badges">
@@ -170,8 +202,8 @@ tr:hover td{background:var(--sur2)}
 
   <!-- 자유 검색 (구글 트렌드와 독립적) -->
   <div class="free-card">
-    <div class="free-title">🔎 자유 검색 — 원하는 주제를 생글생글 · RISS · ScienceON에서 찾기</div>
-    <div class="free-sub">구글 트렌드 키워드와 상관없이, 직접 탐구하고 싶은 주제를 입력하세요. 아래 기간 선택은 건드리지 않아도 됩니다. <strong>전체 열기</strong>를 누르면 🌱 생글생글(배경지식) → 🎓 RISS · ScienceON(심화 논문) 순서로 학습할 수 있어요.</div>
+    <div class="free-title"><span class="card-chip chip-search">SEARCH</span>🔎 자유 검색 — 원하는 주제를 생글생글 · RISS · ScienceON에서 찾기</div>
+    <div class="free-sub">직접 탐구하고 싶은 주제를 입력하세요. <strong>전체 열기</strong>를 누르면 🌱 생글생글(배경지식) → 🎓 RISS · ScienceON(심화 논문) 순서로 학습할 수 있어요.</div>
     <div class="free-search-row">
       <input class="free-input" type="text" id="freeInput" placeholder="예: 청소년 수면 부족, 재생에너지, 딥페이크, 고령화 사회..." 
              onkeydown="if(event.key==='Enter')freeSearchAll()">
@@ -183,7 +215,6 @@ tr:hover td{background:var(--sur2)}
       <button class="free-btn fb-sgsg" onclick="freeSearch('sgsg')">📰 생글생글</button>
       <button class="free-btn fb-riss" onclick="freeSearch('riss')">📚 RISS</button>
       <button class="free-btn fb-sci" onclick="freeSearch('sci')">🔬 ScienceON</button>
-      <button class="free-btn fb-scholar" onclick="freeSearch('scholar')">🎓 Google Scholar</button>
     </div>
     <div class="free-suggest">
       <span class="free-sg-lbl">추천:</span>
@@ -200,7 +231,8 @@ tr:hover td{background:var(--sur2)}
 
   <!-- 기간 + 카테고리 선택 -->
   <div class="card">
-    <div class="lbl">1단계 — 기간 선택</div>
+    <div class="card-title"><span class="card-chip chip-filter">FILTER</span>📈 구글 트렌드 검색</div>
+    <div class="card-sub">1단계 — 기간 선택 검색</div>
     <div class="period-flex">
       <div class="period-row">
         <button class="pbtn" id="pb5" onclick="setPeriod(5)" style="border-color:#3266ad">
@@ -218,12 +250,18 @@ tr:hover td{background:var(--sur2)}
       </div>
       <div class="period-info">
         <span>📊 좌측 <strong>기간 버튼</strong>을 클릭하면 구글 올해의 검색어가 학문 분류로 자동 정리됩니다.</span>
-        <span class="pi-sub">🌱 생글생글(배경지식) → 📚 RISS(심화 논문) 순서로 학습할 수 있어요.</span>
       </div>
     </div>
 
-    <div class="lbl" style="margin-top:14px">2단계 — 카테고리 필터 (복수 선택 가능)</div>
-    <div class="cf-row" id="cf-row"></div>
+    <div class="lbl" style="margin-top:6px">2단계 — 카테고리 필터 (복수 선택 가능)</div>
+    <div class="cf-group">
+      <div class="cf-group-lbl"><span class="cf-group-chip chip-trend">TREND</span>트렌드 카테고리</div>
+      <div class="cf-row" id="cf-row-trend"></div>
+    </div>
+    <div class="cf-group">
+      <div class="cf-group-lbl"><span class="cf-group-chip chip-field">FIELD</span>학문 분야별</div>
+      <div class="cf-row" id="cf-row-field"></div>
+    </div>
   </div>
 
   <!-- 결과 -->
@@ -231,7 +269,7 @@ tr:hover td{background:var(--sur2)}
 
   <!-- [탐구 보고서 작성] 단계 — 통계자료 검색 -->
   <div class="report-card">
-    <div class="report-title">📊 [탐구 보고서 작성] — 통계자료 찾기</div>
+    <div class="report-title"><span class="card-chip chip-stats">STATS</span>📊 통계자료 찾기</div>
     <div class="report-sub">탐구 보고서에 객관적 근거가 되는 통계자료를 검색하세요. <strong>KOSIS(국가통계포털)</strong>는 자체 검색, 나머지 사이트는 구글 사이트 검색으로 열립니다. <strong>전체 열기</strong>는 KOSIS와 e-나라지표를 동시에 엽니다. <span style="color:#b84318">※ 팝업이 차단되면 주소창 우측 아이콘에서 이 사이트의 팝업을 허용해 주세요.</span></div>
     <div class="report-search-row">
       <input class="report-input" type="text" id="reportInput" placeholder="예: 청년실업률, 출생률, 1인가구, 고령화율, 사교육비..."
@@ -243,8 +281,10 @@ tr:hover td{background:var(--sur2)}
     <div class="report-btn-row">
       <button class="report-btn rb-kosis" onclick="statSearch('kosis')">📊 KOSIS 국가통계포털</button>
       <button class="report-btn rb-index" onclick="statSearch('index')">📈 e-나라지표</button>
-      <button class="report-btn rb-bok" onclick="statSearch('bok')">💰 한국은행 ECOS</button>
       <button class="report-btn rb-kostat" onclick="statSearch('kostat')">📋 통계청</button>
+      <button class="report-btn rb-bok" onclick="statSearch('bok')">💰 한국은행 ECOS</button>
+      <button class="report-btn rb-sdata" onclick="statSearch('sdata')">🏙️ 서울 열린데이터광장</button>
+      <button class="report-btn rb-sstat" onclick="statSearch('sstat')">🗺️ 서울통계</button>
     </div>
     <div class="report-suggest">
       <span class="report-sg-lbl">추천:</span>
@@ -436,7 +476,9 @@ const YBG={2021:"#f4f2ed",2022:"#eeedfe",2023:"#e1f5ee",2024:"#e6f1fb",2025:"#fc
 const YTX={2021:"#6a6760",2022:"#3c3489",2023:"#085041",2024:"#0c447c",2025:"#791f1f"};
 const PCS={5:"#3266ad",3:"#1d9e75",2:"#ba7517",1:"#e24b4a"};
 
-const ALL_CATS=["전체","K콘텐츠","K팝","뉴스","레시피","스포츠","영화","게임","AI"];
+const TREND_CATS=["전체","K콘텐츠","K팝","뉴스","레시피","스포츠","영화","게임","AI"];
+const FIELD_CATS=["사회과학","공학","자연과학","예술체육","생활과학","의학·약학"];
+const ALL_CATS=[...TREND_CATS,...FIELD_CATS];
 let curP=0, selCats=new Set(["전체"]), ldat=[];
 
 function classify(kw){
@@ -445,7 +487,6 @@ function classify(kw){
   return{...DEFAULT,riss:kw};
 }
 function rissUrl(kw){return`https://www.riss.kr/search/Search.do?query=${encodeURIComponent(kw)}`;}
-function scholarUrl(kw){return`https://scholar.google.com/scholar?q=${encodeURIComponent(kw)}&hl=ko&as_ylo=2020`;}
 function sgsgUrl(kw){return`https://www.google.com/search?q=${encodeURIComponent(kw+" site:sgsg.hankyung.com")}&hl=ko&tbs=sbd:1`;}
 
 // 팝업 차단 우회: window.open 대신 가짜 <a> 클릭으로 새 탭 열기
@@ -474,14 +515,26 @@ function setPeriod(y){
 }
 
 function renderCF(){
-  document.getElementById("cf-row").innerHTML=ALL_CATS.map(c=>
-    `<button class="cfb${selCats.has(c)?" on":""}" onclick="togCat('${c}')">${c}</button>`
-  ).join("");
+  const mkBtn=c=>`<button class="cfb${selCats.has(c)?" on":""}" onclick="togCat('${c}')">${c}</button>`;
+  document.getElementById("cf-row-trend").innerHTML=TREND_CATS.map(mkBtn).join("");
+  document.getElementById("cf-row-field").innerHTML=FIELD_CATS.map(mkBtn).join("");
 }
 
 function togCat(c){
-  if(c==="전체"){selCats=new Set(["전체"]);}
-  else{selCats.delete("전체");if(selCats.has(c))selCats.delete(c);else selCats.add(c);if(!selCats.size)selCats.add("전체");}
+  if(c==="전체"){
+    // "전체" 클릭 시 트렌드 그룹만 초기화 (학문 그룹은 유지)
+    [...selCats].forEach(s=>{if(TREND_CATS.includes(s))selCats.delete(s);});
+    selCats.add("전체");
+  }
+  else if(TREND_CATS.includes(c)){
+    selCats.delete("전체");
+    if(selCats.has(c))selCats.delete(c);else selCats.add(c);
+    if(![...selCats].some(s=>TREND_CATS.includes(s) && s!=="전체"))selCats.add("전체");
+  }
+  else if(FIELD_CATS.includes(c)){
+    // 학문 카테고리는 "전체"와 독립적으로 토글
+    if(selCats.has(c))selCats.delete(c);else selCats.add(c);
+  }
   renderCF();doAnalyze();
 }
 
@@ -491,8 +544,22 @@ function doAnalyze(){
   if(!curP)return;
   const years=getYears(curP);
   let filt=RAW.filter(d=>years.includes(d.y));
-  if(!selCats.has("전체"))filt=filt.filter(d=>selCats.has(d.cat));
+
+  // 선택된 카테고리를 두 그룹으로 분리
+  const selTrend=[...selCats].filter(c=>TREND_CATS.includes(c));
+  const selField=[...selCats].filter(c=>FIELD_CATS.includes(c));
+
+  // 트렌드 카테고리 필터 (cat 기반)
+  if(selTrend.length>0 && !selTrend.includes("전체")){
+    filt=filt.filter(d=>selTrend.includes(d.cat));
+  }
+
   ldat=filt.map(d=>{const c=classify(d.kw);return{...d,...c};});
+
+  // 학문 분야 필터 (major 기반)
+  if(selField.length>0){
+    ldat=ldat.filter(d=>selField.includes(d.major));
+  }
 
   const byMaj={};
   ldat.forEach(d=>{
@@ -547,7 +614,6 @@ function doAnalyze(){
               <div class="kw-method">🔬 탐구방법: ${d.method}</div>
               <a class="riss-a riss-sub" href="${sgsgUrl(d.kw)}" target="_blank" style="font-size:10px;background:#fef1e9;color:#b84318;border-color:#f0c4a8">📰 생글생글 →</a>
               <a class="riss-a riss-main" href="${rissUrl(rk)}" target="_blank" style="font-size:10px">📚 RISS →</a>
-              <a class="riss-a riss-sub" href="${scholarUrl(rk)}" target="_blank" style="font-size:10px">Google Scholar →</a>
               <a class="riss-a riss-sub" href="${scienceOnUrl(rk)}" target="_blank" style="font-size:10px;background:#e8f0fd;color:#1a4ba8;border-color:#b3ccf5">ScienceON →</a>
             </div>`;
           }).join("")}
@@ -604,7 +670,7 @@ function freeGetKw(){
 }
 function freeSearch(site){
   const kw=freeGetKw();if(!kw)return;
-  const urls={sgsg:sgsgUrl(kw),riss:rissUrl(kw),sci:scienceOnUrl(kw),scholar:scholarUrl(kw)};
+  const urls={sgsg:sgsgUrl(kw),riss:rissUrl(kw),sci:scienceOnUrl(kw)};
   openTab(urls[site]);
 }
 function freeSearchAll(){
@@ -624,6 +690,8 @@ function kosisUrl(kw){return`https://kosis.kr/search/search.do?query=${encodeURI
 function indexUrl(kw){return`https://www.google.com/search?q=${encodeURIComponent(kw+" site:index.go.kr")}&hl=ko`;}
 function bokUrl(kw){return`https://www.google.com/search?q=${encodeURIComponent(kw+" site:bok.or.kr")}&hl=ko`;}
 function kostatUrl(kw){return`https://www.google.com/search?q=${encodeURIComponent(kw+" (site:mods.go.kr OR site:kostat.go.kr)")}&hl=ko`;}
+function sdataUrl(kw){return`https://www.google.com/search?q=${encodeURIComponent(kw+" site:data.seoul.go.kr")}&hl=ko`;}
+function sstatUrl(kw){return`https://www.google.com/search?q=${encodeURIComponent(kw+" site:stat.seoul.go.kr")}&hl=ko`;}
 
 function reportFill(kw){
   document.getElementById("reportInput").value=kw;
@@ -637,7 +705,7 @@ function reportGetKw(){
 }
 function statSearch(site){
   const kw=reportGetKw();if(!kw)return;
-  const urls={kosis:kosisUrl(kw),index:indexUrl(kw),bok:bokUrl(kw),kostat:kostatUrl(kw)};
+  const urls={kosis:kosisUrl(kw),index:indexUrl(kw),bok:bokUrl(kw),kostat:kostatUrl(kw),sdata:sdataUrl(kw),sstat:sstatUrl(kw)};
   const w=window.open(urls[site],"_blank","noopener,noreferrer");
   if(!w||w.closed||typeof w.closed==="undefined"){
     alert("새 탭이 팝업으로 차단됐어요.\n\n주소창 우측의 팝업 차단 아이콘을 클릭해서\n이 사이트의 팝업을 \"항상 허용\"으로 설정해 주세요.");
