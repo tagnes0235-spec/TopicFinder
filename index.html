@@ -9,20 +9,20 @@
 :root{
   --r:16px;--rs:12px;
   --tx:#1a1a2e;--tx2:#4a4a6a;--tx3:#7a7a9a;
-  --glass-bg:rgba(255,255,255,0.55);
-  --glass-bg-soft:rgba(255,255,255,0.35);
-  --glass-bg-strong:rgba(255,255,255,0.75);
-  --glass-brd:rgba(255,255,255,0.55);
-  --glass-brd-soft:rgba(255,255,255,0.35);
-  --glass-shadow:0 8px 32px 0 rgba(31,38,135,0.12);
+  --glass-bg:rgba(255,255,255,0.9);
+  --glass-bg-soft:rgba(255,255,255,0.7);
+  --glass-bg-strong:rgba(255,255,255,0.98);
+  --glass-brd:rgba(180,180,200,0.35);
+  --glass-brd-soft:rgba(180,180,200,0.25);
+  --glass-shadow:0 2px 12px 0 rgba(80,80,120,0.06);
   --accent-1:#5b6fde;  /* 인디고 - 자유 검색 */
   --accent-2:#7e5fce;  /* 라벤더 - 통계자료 */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans KR',sans-serif;background:linear-gradient(135deg,#a8c5e8 0%,#c0b4e8 40%,#d8b4e0 70%,#e8c4d8 100%);background-attachment:fixed;color:var(--tx);min-height:100vh;font-size:14px}
+body{font-family:'Noto Sans KR',sans-serif;background:#eae8e2;color:var(--tx);min-height:100vh;font-size:14px;position:relative}
 
 /* 헤더 - 글래스 */
-.hdr{background:rgba(255,255,255,0.5);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--glass-brd);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 4px 16px rgba(31,38,135,0.08)}
+.hdr{background:rgba(255,255,255,0.85);backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%);border-bottom:1px solid var(--glass-brd);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 6px rgba(80,80,120,0.06)}
 .hdr-l .t{font-size:16px;font-weight:700;letter-spacing:-.3px;color:var(--tx)}
 .hdr-l .s{font-size:11px;color:var(--tx2);margin-top:1px}
 .hdr-badges{display:flex;gap:6px}
@@ -30,10 +30,42 @@ body{font-family:'Noto Sans KR',sans-serif;background:linear-gradient(135deg,#a8
 .b-free{color:#0d6e4a}
 .b-off{color:#7a4408}
 
-.wrap{max-width:920px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:14px}
+.wrap{max-width:1200px;margin:20px auto 48px 32px;padding:52px 36px 44px;background:#ffffff;border-radius:18px;box-shadow:0 4px 24px rgba(80,80,120,0.08);position:relative;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+
+/* 노트 좌측 상단 파란 대각선 액센트 */
+.wrap::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:110px;
+  height:110px;
+  background:linear-gradient(135deg,#c8d5e5 0%,#c8d5e5 48%,transparent 50%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* 노트 우측 상단 페이퍼 클립 */
+.wrap::after{
+  content:"";
+  position:absolute;
+  top:18px;
+  right:36px;
+  width:24px;
+  height:58px;
+  background:
+    linear-gradient(#a8a8b0,#a8a8b0) top left / 2.5px 46px no-repeat,
+    linear-gradient(#a8a8b0,#a8a8b0) top left / 2.5px 42px no-repeat,
+    linear-gradient(#a8a8b0,#a8a8b0) 8px 0 / 2.5px 32px no-repeat,
+    radial-gradient(circle at 4px 46px, #a8a8b0 0 4.5px, transparent 5.5px),
+    radial-gradient(circle at 15px 30px, transparent 0 10.5px, #a8a8b0 11px 13.5px, transparent 14px);
+  transform:rotate(18deg);
+  pointer-events:none;
+  z-index:2;
+}
 
 /* 카드 공통 */
-.card{background:var(--glass-bg);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--glass-shadow)}
+.card{background:var(--glass-bg);backdrop-filter:blur(8px) saturate(140%);-webkit-backdrop-filter:blur(8px) saturate(140%);border:1px solid var(--glass-brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--glass-shadow)}
 .lbl{font-size:10px;font-weight:700;color:var(--tx2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 
 /* 카드 영역 컬러 칩 */
@@ -137,7 +169,7 @@ tr:hover td{background:rgba(255,255,255,0.3)}
 .empty .big{font-size:36px;margin-bottom:8px}
 
 /* 자유 검색 카드 */
-.free-card{background:var(--glass-bg);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--glass-shadow)}
+.free-card{background:var(--glass-bg);backdrop-filter:blur(8px) saturate(140%);-webkit-backdrop-filter:blur(8px) saturate(140%);border:1px solid var(--glass-brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--glass-shadow)}
 .free-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .free-sub{font-size:11px;color:var(--tx2);margin-bottom:12px;line-height:1.5}
 .free-search-row{display:flex;gap:6px;align-items:center;margin-bottom:10px}
@@ -159,7 +191,7 @@ tr:hover td{background:rgba(255,255,255,0.3)}
 @media(max-width:600px){.free-search-row{flex-direction:column;align-items:stretch}.free-btn-row{justify-content:center}}
 
 /* 탐구 보고서 카드 */
-.report-card{background:var(--glass-bg);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--glass-shadow)}
+.report-card{background:var(--glass-bg);backdrop-filter:blur(8px) saturate(140%);-webkit-backdrop-filter:blur(8px) saturate(140%);border:1px solid var(--glass-brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--glass-shadow)}
 .report-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .report-sub{font-size:11px;color:var(--tx2);margin-bottom:12px;line-height:1.5}
 .report-search-row{display:flex;gap:6px;align-items:center;margin-bottom:10px}
